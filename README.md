@@ -144,24 +144,6 @@ Proyek ini dikembangkan untuk keperluan:
 * Demonstrasi sistem klasifikasi kesehatan berbasis web
 
 ---
-
-## 📄 Lisensi
-
-Proyek ini menggunakan lisensi **MIT License**
-Silakan digunakan dan dikembangkan untuk keperluan akademik.
-
----
-
-## 🙌 Penutup
-
-Semoga aplikasi ini dapat membantu dalam pengembangan sistem deteksi dini Alzheimer dan menjadi referensi pembelajaran machine learning berbasis kesehatan.
-
----
-
-Kalau kamu mau, aku bisa:
-
-* ✅ bikinkan **`requirements.txt`**
-* ✅ bikinkan **MIT LICENSE**
 * ✅ bantu **deskripsi repo GitHub (About section)**
 * ✅ bantu **deployment ke Streamlit Cloud + badge**
 
