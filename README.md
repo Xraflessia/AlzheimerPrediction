@@ -139,8 +139,6 @@ Aplikasi terdiri dari dua tab utama:
 
 Proyek ini dikembangkan untuk keperluan:
 
-* Tugas akhir / skripsi
-* Pembelajaran machine learning
-* Demonstrasi sistem klasifikasi kesehatan berbasis web
+* Pembelajaran Sistem Cerdas
 
 ---
