@@ -130,8 +130,8 @@ Aplikasi terdiri dari dua tab utama:
 
 ## ⚠️ Catatan Penting
 
-* Aplikasi ini **bukan alat diagnosis medis**, melainkan **alat bantu pendukung keputusan**.
-* Hasil prediksi harus dikonsultasikan dengan tenaga medis profesional.
+- Aplikasi ini **bukan alat diagnosis medis**, melainkan **alat bantu pendukung keputusan**.
+- Hasil prediksi harus dikonsultasikan dengan tenaga medis profesional.
 
 ---
 
@@ -139,6 +139,6 @@ Aplikasi terdiri dari dua tab utama:
 
 Proyek ini dikembangkan untuk keperluan:
 
-* Pembelajaran Sistem Cerdas
+- Pembelajaran Sistem Cerdas
 
 ---
