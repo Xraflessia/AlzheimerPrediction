@@ -1,10 +1,4 @@
-Siap 👍
-Berikut **README.md versi RAPI, FORMAL, dan SIAP UNTUK GITHUB** — cocok untuk **project akademik / skripsi / demo Streamlit**.
-Tinggal **copy–paste** ke file `README.md` di repo GitHub kamu.
-
----
-
-# 🧠 Sistem Deteksi Alzheimer Berbasis Machine Learning
+#  Sistem Deteksi Alzheimer Berbasis Machine Learning
 
 Aplikasi ini merupakan sistem **klasifikasi biner** untuk membantu **deteksi risiko penyakit Alzheimer pada lansia** menggunakan **algoritma XGBoost Classifier**.
 Sistem dikembangkan menggunakan **Python**, **scikit-learn**, **XGBoost**, dan **Streamlit** sebagai antarmuka pengguna.
