@@ -144,7 +144,3 @@ Proyek ini dikembangkan untuk keperluan:
 * Demonstrasi sistem klasifikasi kesehatan berbasis web
 
 ---
-* ✅ bantu **deskripsi repo GitHub (About section)**
-* ✅ bantu **deployment ke Streamlit Cloud + badge**
-
-Tinggal bilang mau lanjut yang mana 👌
