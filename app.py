@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # =========================
-# LOAD MODEL & DATA
+# LOAD MODEL & EVALUASI
 # =========================
 model = joblib.load("xgboost_alzheimer_model.pkl")
 scaler = joblib.load("scaler.pkl")
@@ -15,26 +15,113 @@ eval_results = joblib.load("evaluation_results.pkl")
 # PAGE CONFIG
 # =========================
 st.set_page_config(
-    page_title="Sistem Deteksi Alzheimer",
-    layout="centered"
+    page_title="Sistem Cerdas Deteksi Alzheimer",
+    layout="wide"
 )
 
-st.title("🧠 Sistem Deteksi Alzheimer Berbasis Machine Learning")
-st.write(
-    "Aplikasi ini menggunakan algoritma **XGBoost Classifier** "
-    "untuk membantu mendeteksi risiko penyakit Alzheimer pada lansia."
-)
+# =========================
+# HEADER
+# =========================
+st.title("🧠 Sistem Cerdas Deteksi Alzheimer")
+st.markdown("""
+**Nama**  : Cindy Alya Putri  
+**NIM**   : 22533644  
+**Kelas** : TI 7D  
+
+Aplikasi ini merupakan **tugas mata kuliah Sistem Cerdas**  
+untuk mendeteksi **risiko penyakit Alzheimer pada lansia**
+menggunakan **algoritma XGBoost Classifier**.
+""")
 
 # =========================
 # TABS
 # =========================
-tab1, tab2 = st.tabs(["📈 Evaluasi Model", "🧪 Prediksi Pasien Baru"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "🏠 Beranda",
+    "📊 Dataset",
+    "🤖 Metode XGBoost",
+    "📈 Evaluasi Model",
+    "🧪 Prediksi Pasien Baru"
+])
 
 # ==========================================================
-# TAB 1 : EVALUASI MODEL
+# TAB 1 : BERANDA
 # ==========================================================
 with tab1:
-    st.subheader("📊 Performa Model")
+    st.subheader("📌 Latar Belakang")
+    st.write("""
+    Penyakit Alzheimer merupakan salah satu gangguan neurodegeneratif
+    yang banyak dialami oleh lansia dan dapat menyebabkan penurunan fungsi kognitif.
+    Oleh karena itu, diperlukan sistem cerdas yang mampu membantu
+    mendeteksi risiko Alzheimer secara dini berdasarkan data klinis.
+    """)
+
+    st.subheader("🎯 Tujuan Sistem")
+    st.write("""
+    Tujuan dari sistem ini adalah membangun model klasifikasi
+    untuk mengelompokkan pasien lansia ke dalam dua kelas:
+    **Alzheimer** dan **Non-Alzheimer**
+    menggunakan pendekatan machine learning.
+    """)
+
+# ==========================================================
+# TAB 2 : DATASET
+# ==========================================================
+with tab2:
+    st.subheader("📊 Deskripsi Dataset")
+    st.write("""
+    Dataset yang digunakan berasal dari Kaggle:
+
+    **Alzheimer’s Disease Dataset**  
+    Sumber: https://www.kaggle.com/datasets/rabieelkharoua/alzheimers-disease-dataset
+
+    Dataset ini berisi data klinis, gaya hidup, dan kondisi kognitif pasien lansia.
+    """)
+
+    st.subheader("🔢 Fitur dan Target")
+    st.markdown("""
+    - **Fitur**: Usia, BMI, tekanan darah, kolesterol, MMSE, kondisi perilaku, dll  
+    - **Target**: `Diagnosis`
+        - `0` → Non-Alzheimer  
+        - `1` → Alzheimer
+    """)
+
+    st.info("Dataset digunakan untuk **klasifikasi biner (supervised learning)**.")
+
+# ==========================================================
+# TAB 3 : METODE XGBOOST
+# ==========================================================
+with tab3:
+    st.subheader("🤖 Algoritma XGBoost")
+
+    st.write("""
+    XGBoost (Extreme Gradient Boosting) adalah algoritma
+    ensemble learning yang membangun banyak decision tree
+    secara bertahap untuk meningkatkan akurasi prediksi.
+    """)
+
+    st.subheader("🧠 Cara Kerja XGBoost dalam Sistem Ini")
+    st.markdown("""
+    1. Data pasien lansia dimasukkan ke dalam sistem  
+    2. Setiap decision tree mempelajari pola dari data klinis  
+    3. Kesalahan prediksi diperbaiki oleh tree berikutnya  
+    4. Hasil akhir berupa:
+       - Prediksi kelas (Alzheimer / Non-Alzheimer)
+       - Probabilitas Alzheimer
+    """)
+
+    st.subheader("✅ Alasan Pemilihan XGBoost")
+    st.markdown("""
+    - Cocok untuk data tabular & numerik  
+    - Performa tinggi pada klasifikasi biner  
+    - Banyak digunakan pada penelitian kesehatan  
+    """)
+
+# ==========================================================
+# TAB 4 : EVALUASI MODEL
+# ==========================================================
+with tab4:
+    st.subheader("📈 Hasil Evaluasi Model")
 
     col1, col2 = st.columns(2)
     col1.metric("Accuracy", f"{eval_results['accuracy']:.3f}")
@@ -48,73 +135,41 @@ with tab1:
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
     ax.set_title("Confusion Matrix")
-
     st.pyplot(fig)
 
     st.markdown("### Classification Report")
     report_df = pd.DataFrame(eval_results["classification_report"]).transpose()
     st.dataframe(report_df)
 
+    st.info("""
+    Evaluasi dilakukan menggunakan data uji (test data)
+    untuk mengukur performa model dalam mengklasifikasikan pasien.
+    """)
+
 # ==========================================================
-# TAB 2 : PREDIKSI DATA BARU
+# TAB 5 : PREDIKSI DATA BARU
 # ==========================================================
-with tab2:
+with tab5:
     st.subheader("🧪 Prediksi Diagnosis Alzheimer")
 
     with st.form("prediction_form"):
         age = st.number_input("Usia", 40, 100, 70)
         gender = st.selectbox("Jenis Kelamin", [0, 1], format_func=lambda x: "Perempuan" if x == 0 else "Laki-laki")
-        ethnicity = st.selectbox("Etnis", [0, 1, 2, 3])
         education = st.selectbox("Tingkat Pendidikan", [0, 1, 2, 3])
         bmi = st.number_input("BMI", 10.0, 40.0, 23.0)
-        smoking = st.selectbox("Merokok", [0, 1])
-        alcohol = st.number_input("Konsumsi Alkohol", 0.0, 30.0, 5.0)
-        activity = st.number_input("Aktivitas Fisik", 0.0, 10.0, 5.0)
-        diet = st.number_input("Kualitas Diet", 0.0, 5.0, 2.5)
-        sleep = st.number_input("Kualitas Tidur", 0.0, 10.0, 7.0)
-        family = st.selectbox("Riwayat Alzheimer Keluarga", [0, 1])
-        cardio = st.selectbox("Penyakit Kardiovaskular", [0, 1])
-        diabetes = st.selectbox("Diabetes", [0, 1])
-        depression = st.selectbox("Depresi", [0, 1])
-        head = st.selectbox("Riwayat Cedera Kepala", [0, 1])
-        hyper = st.selectbox("Hipertensi", [0, 1])
-        sys = st.number_input("Tekanan Darah Sistolik", 80, 200, 130)
-        dia = st.number_input("Tekanan Darah Diastolik", 50, 120, 80)
-        chol = st.number_input("Kolesterol Total", 100, 350, 220)
-        ldl = st.number_input("LDL", 50, 250, 140)
-        hdl = st.number_input("HDL", 20, 100, 50)
-        trig = st.number_input("Trigliserida", 50, 400, 150)
         mmse = st.number_input("Skor MMSE", 0, 30, 20)
-        func = st.number_input("Functional Assessment", 0.0, 10.0, 5.0)
-        memory = st.selectbox("Keluhan Memori", [0, 1])
-        behavior = st.selectbox("Masalah Perilaku", [0, 1])
-        adl = st.number_input("ADL", 0.0, 10.0, 4.0)
-        confusion = st.selectbox("Kebingungan", [0, 1])
-        disorientation = st.selectbox("Disorientasi", [0, 1])
-        personality = st.selectbox("Perubahan Kepribadian", [0, 1])
-        difficulty = st.selectbox("Sulit Menyelesaikan Tugas", [0, 1])
+        hypertension = st.selectbox("Hipertensi", [0, 1])
+        diabetes = st.selectbox("Diabetes", [0, 1])
         forgetful = st.selectbox("Pelupa", [0, 1])
 
         submit = st.form_submit_button("Prediksi")
 
     if submit:
-        input_data = pd.DataFrame([[  
-            age, gender, ethnicity, education, bmi, smoking, alcohol,
-            activity, diet, sleep, family, cardio, diabetes, depression,
-            head, hyper, sys, dia, chol, ldl, hdl, trig, mmse, func,
-            memory, behavior, adl, confusion, disorientation,
-            personality, difficulty, forgetful
-        ]], columns=[
-            "Age","Gender","Ethnicity","EducationLevel","BMI","Smoking",
-            "AlcoholConsumption","PhysicalActivity","DietQuality","SleepQuality",
-            "FamilyHistoryAlzheimers","CardiovascularDisease","Diabetes",
-            "Depression","HeadInjury","Hypertension","SystolicBP","DiastolicBP",
-            "CholesterolTotal","CholesterolLDL","CholesterolHDL",
-            "CholesterolTriglycerides","MMSE","FunctionalAssessment",
-            "MemoryComplaints","BehavioralProblems","ADL","Confusion",
-            "Disorientation","PersonalityChanges",
-            "DifficultyCompletingTasks","Forgetfulness"
-        ])
+        input_data = pd.DataFrame([[
+            age, gender, 0, education, bmi, 0, 0, 0, 0, 0, 0, 0,
+            diabetes, 0, 0, hypertension, 0, 0, 0, 0, 0, 0,
+            mmse, 0, 0, 0, 0, 0, 0, 0, 0, forgetful
+        ]], columns=model.feature_names_in_)
 
         input_scaled = scaler.transform(input_data)
         pred = model.predict(input_scaled)[0]
