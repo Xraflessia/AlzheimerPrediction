@@ -1,145 +1,180 @@
-import streamlit as st
+# =========================================
+# IDENTITAS
+# =========================================
+# Nama  : Cindy Alya Putri
+# NIM   : 22533644
+# Kelas : TI 7D
+# Dataset : Kaggle - Alzheimer's Disease Dataset
+# =========================================
+
+# =========================================
+# IMPORT LIBRARY
+# =========================================
 import pandas as pd
-import joblib
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import joblib
 
-# =========================
-# LOAD MODEL
-# =========================
-model = joblib.load("xgboost_alzheimer_model.pkl")
-scaler = joblib.load("scaler.pkl")
-eval_results = joblib.load("evaluation_results.pkl")
-
-st.set_page_config(
-    page_title="Sistem Cerdas Deteksi Alzheimer",
-    layout="wide"
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    classification_report,
+    roc_auc_score,
+    roc_curve
 )
 
-st.title("🧠 Sistem Cerdas Deteksi Alzheimer")
-st.markdown("""
-**Nama**  : Cindy Alya Putri  
-**NIM**   : 22533644  
-**Kelas** : TI 7D  
-""")
+from xgboost import XGBClassifier
 
-# =========================
-# TABS
-# =========================
-tab1, tab2, tab3, tab4 = st.tabs([
-    "🔁 Alur Prediksi Sistem",
-    "📊 Dataset",
-    "📈 Evaluasi Model",
-    "🧪 Prediksi"
-])
+# =========================================
+# LOAD DATASET
+# =========================================
+df = pd.read_csv("alzheimers_disease_data.csv")
 
-# ==========================================================
-# TAB 1 : ALUR PREDIKSI SISTEM
-# ==========================================================
-with tab1:
-    st.subheader("🔁 Alur Prediksi Sistem Cerdas")
+print(df.head())
+print(df.info())
 
-    st.markdown("""
-    Alur prediksi pada sistem deteksi Alzheimer ditunjukkan sebagai berikut:
-    """)
+# =========================================
+# PREPROCESSING
+# =========================================
+# Drop kolom yang tidak relevan
+df = df.drop(columns=["PatientID", "DoctorInCharge"])
 
-    st.code("""
-Input Data Pasien
-        ↓
-Preprocessing Data
-- Penyesuaian fitur
-- Normalisasi (StandardScaler)
-        ↓
-Model XGBoost
-- Ensemble Decision Tree
-- Gradient Boosting
-        ↓
-Output Prediksi
-- Diagnosis (Alzheimer / Non-Alzheimer)
-- Probabilitas Risiko
-        ↓
-Tampilan Hasil di Streamlit
-    """)
+# Cek missing value
+print(df.isnull().sum())
 
-    st.success("""
-    Setiap kali pengguna menekan tombol **Prediksi**, sistem akan
-    menjalankan seluruh alur di atas secara otomatis.
-    """)
+# =========================================
+# FEATURE & TARGET
+# =========================================
+X = df.drop(columns=["Diagnosis"])
+y = df["Diagnosis"]
 
-# ==========================================================
-# TAB 2 : DATASET
-# ==========================================================
-with tab2:
-    st.subheader("📊 Dataset yang Digunakan")
-    st.write("""
-    Dataset berasal dari Kaggle dan berisi data klinis pasien lansia
-    yang digunakan sebagai dasar pembelajaran model XGBoost.
-    """)
+# =========================================
+# SPLIT DATA
+# =========================================
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
 
-    st.markdown("""
-    **Target Klasifikasi:**
-    - 0 → Non-Alzheimer
-    - 1 → Alzheimer
-    """)
+# =========================================
+# FEATURE SCALING
+# =========================================
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-# ==========================================================
-# TAB 3 : EVALUASI MODEL
-# ==========================================================
-with tab3:
-    st.subheader("📈 Evaluasi Model")
+# =========================================
+# TRAINING MODEL (XGBOOST)
+# =========================================
+model = XGBClassifier(
+    n_estimators=300,
+    max_depth=5,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    eval_metric="logloss",
+    random_state=42
+)
 
-    col1, col2 = st.columns(2)
-    col1.metric("Accuracy", f"{eval_results['accuracy']:.3f}")
-    col2.metric("ROC-AUC", f"{eval_results['roc_auc']:.3f}")
+model.fit(X_train_scaled, y_train)
 
-    cm = eval_results["confusion_matrix"]
-    fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
-    ax.set_xlabel("Predicted")
-    ax.set_ylabel("Actual")
-    st.pyplot(fig)
+# =========================================
+# PREDIKSI DATA UJI
+# =========================================
+y_pred = model.predict(X_test_scaled)
+y_proba = model.predict_proba(X_test_scaled)[:, 1]
 
-# ==========================================================
-# TAB 4 : PREDIKSI
-# ==========================================================
-with tab4:
-    st.subheader("🧪 Prediksi Pasien Baru")
+# =========================================
+# EVALUASI MODEL
+# =========================================
+accuracy = accuracy_score(y_test, y_pred)
+roc_auc = roc_auc_score(y_test, y_proba)
+cm = confusion_matrix(y_test, y_pred)
 
-    with st.form("prediction_form"):
-        age = st.number_input("Usia", 40, 100, 70)
-        bmi = st.number_input("BMI", 10.0, 40.0, 23.0)
-        mmse = st.number_input("Skor MMSE", 0, 30, 20)
-        forgetful = st.selectbox("Pelupa", [0, 1])
-        submit = st.form_submit_button("Prediksi")
+print("Accuracy:", accuracy)
+print("ROC-AUC:", roc_auc)
+print(classification_report(y_test, y_pred))
 
-    if submit:
-        # =========================
-        # STEP 1: INPUT
-        # =========================
-        st.info("📥 Step 1: Data pasien diterima")
+# Confusion Matrix
+plt.figure(figsize=(5,4))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+plt.show()
 
-        input_data = pd.DataFrame([[  
-            age, 0, 0, 0, bmi, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            mmse, 0, 0, 0, 0, 0, 0, 0, 0, forgetful
-        ]], columns=model.feature_names_in_)
+# ROC Curve
+fpr, tpr, _ = roc_curve(y_test, y_proba)
+plt.figure(figsize=(6,5))
+plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.2f}")
+plt.plot([0,1], [0,1], linestyle="--")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
+plt.legend()
+plt.show()
 
-        # =========================
-        # STEP 2: PREPROCESSING
-        # =========================
-        st.info("⚙️ Step 2: Normalisasi data (StandardScaler)")
-        input_scaled = scaler.transform(input_data)
+# =========================================
+# SIMPAN MODEL & HASIL EVALUASI
+# =========================================
+joblib.dump(model, "xgboost_alzheimer_model.pkl")
+joblib.dump(scaler, "scaler.pkl")
 
-        # =========================
-        # STEP 3: PREDIKSI
-        # =========================
-        st.info("🤖 Step 3: Prediksi oleh model XGBoost")
-        pred = model.predict(input_scaled)[0]
-        prob = model.predict_proba(input_scaled)[0][1]
+evaluation_results = {
+    "accuracy": accuracy,
+    "roc_auc": roc_auc,
+    "confusion_matrix": cm,
+    "classification_report": classification_report(y_test, y_pred, output_dict=True)
+}
 
-        # =========================
-        # STEP 4: OUTPUT
-        # =========================
-        st.success("📊 Step 4: Hasil prediksi ditampilkan")
-        st.write("**Diagnosis:**", "🟥 Alzheimer" if pred == 1 else "🟩 Non-Alzheimer")
-        st.write("**Probabilitas Alzheimer:**", f"{prob:.2%}")
+joblib.dump(evaluation_results, "evaluation_results.pkl")
+
+# =========================================
+# PREDIKSI DATA BARU
+# =========================================
+new_data = pd.DataFrame([{
+    "Age": 75,
+    "Gender": 1,
+    "Ethnicity": 0,
+    "EducationLevel": 2,
+    "BMI": 23.5,
+    "Smoking": 0,
+    "AlcoholConsumption": 8.5,
+    "PhysicalActivity": 5.2,
+    "DietQuality": 1.3,
+    "SleepQuality": 7.8,
+    "FamilyHistoryAlzheimers": 1,
+    "CardiovascularDisease": 0,
+    "Diabetes": 1,
+    "Depression": 0,
+    "HeadInjury": 0,
+    "Hypertension": 1,
+    "SystolicBP": 145,
+    "DiastolicBP": 85,
+    "CholesterolTotal": 240,
+    "CholesterolLDL": 160,
+    "CholesterolHDL": 45,
+    "CholesterolTriglycerides": 180,
+    "MMSE": 18,
+    "FunctionalAssessment": 5.5,
+    "MemoryComplaints": 1,
+    "BehavioralProblems": 1,
+    "ADL": 3.2,
+    "Confusion": 1,
+    "Disorientation": 1,
+    "PersonalityChanges": 1,
+    "DifficultyCompletingTasks": 1,
+    "Forgetfulness": 1
+}])
+
+new_data_scaled = scaler.transform(new_data)
+prediction = model.predict(new_data_scaled)[0]
+prediction_proba = model.predict_proba(new_data_scaled)[0][1]
+
+print("Prediksi Diagnosis:", "Alzheimer" if prediction == 1 else "Non-Alzheimer")
+print("Probabilitas Alzheimer:", round(prediction_proba, 3))
