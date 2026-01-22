@@ -93,11 +93,16 @@ with tab1:
 with tab2:
     st.subheader("📈 Evaluasi Performa Model")
 
-    col1, col2 = st.columns(2)
-    col1.metric("Accuracy", f"{eval_results['accuracy']:.3f}")
-    col2.metric("ROC-AUC", f"{eval_results['roc_auc']:.3f}")
+    # ACCURACY
+    st.markdown("### ✅ Accuracy")
+    st.metric("Accuracy", f"{eval_results['accuracy']:.3f}")
+    st.markdown("""
+    Accuracy menunjukkan tingkat ketepatan model dalam memprediksi diagnosis pasien.
+    Nilai yang tinggi menandakan bahwa sebagian besar data berhasil diklasifikasikan dengan benar.
+    """)
 
-    st.markdown("### Confusion Matrix")
+    # CONFUSION MATRIX
+    st.markdown("### 🔍 Confusion Matrix")
     cm = eval_results["confusion_matrix"]
     fig, ax = plt.subplots()
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
@@ -105,9 +110,31 @@ with tab2:
     ax.set_ylabel("Actual")
     st.pyplot(fig)
 
-    st.markdown("### Classification Report")
+    st.markdown("""
+    Confusion matrix memperlihatkan jumlah prediksi benar dan salah.
+    Model mampu mengklasifikasikan sebagian besar pasien Alzheimer dan Non-Alzheimer dengan tepat,
+    serta memiliki kesalahan klasifikasi yang relatif rendah.
+    """)
+
+    # CLASSIFICATION REPORT
+    st.markdown("### 📋 Classification Report")
     report_df = pd.DataFrame(eval_results["classification_report"]).transpose()
     st.dataframe(report_df)
+
+    st.markdown("""
+    Classification report menunjukkan nilai precision, recall, dan F1-score.
+    Nilai yang tinggi pada kelas Alzheimer menandakan model efektif dalam mendeteksi pasien
+    yang benar-benar mengalami Alzheimer.
+    """)
+
+    # ROC AUC
+    st.markdown("### 📈 ROC-AUC")
+    st.metric("ROC-AUC", f"{eval_results['roc_auc']:.3f}")
+
+    st.markdown("""
+    Nilai ROC-AUC yang mendekati 1 menunjukkan bahwa model memiliki kemampuan yang sangat baik
+    dalam membedakan pasien Alzheimer dan Non-Alzheimer.
+    """)
 
 # =====================================================
 # TAB 3 – ALUR DETEKSI
