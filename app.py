@@ -116,20 +116,25 @@ with tab2:
 
     cm = eval_results["confusion_matrix"]
 
-    fig, ax = plt.subplots(figsize=(4, 3), dpi=120)
+    fig, ax = plt.subplots(figsize=(3, 2.5), dpi=110)
+
     sns.heatmap(
         cm,
         annot=True,
         fmt="d",
         cmap="Blues",
         cbar=False,
-        annot_kws={"size": 10},
+        square=True,
+        linewidths=0.5,
+        annot_kws={"size": 9},
         ax=ax
     )
-    ax.set_xlabel("Predicted", fontsize=9)
-    ax.set_ylabel("Actual", fontsize=9)
-    ax.set_title("Confusion Matrix", fontsize=10)
-    st.pyplot(fig)
+
+    ax.set_xlabel("Predicted", fontsize=8)
+    ax.set_ylabel("Actual", fontsize=8)
+    ax.set_title("Confusion Matrix", fontsize=9, pad=6)
+
+    st.pyplot(fig, use_container_width=False)
 
     st.markdown(f"""
     **Interpretasi Confusion Matrix:**
