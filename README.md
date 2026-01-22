@@ -1,10 +1,4 @@
-Siap 👍
-Berikut **README.md versi RAPI, FORMAL, dan SIAP UNTUK GITHUB** — cocok untuk **project akademik / skripsi / demo Streamlit**.
-Tinggal **copy–paste** ke file `README.md` di repo GitHub kamu.
-
----
-
-# 🧠 Sistem Deteksi Alzheimer Berbasis Machine Learning
+#  Sistem Deteksi Alzheimer Berbasis Machine Learning
 
 Aplikasi ini merupakan sistem **klasifikasi biner** untuk membantu **deteksi risiko penyakit Alzheimer pada lansia** menggunakan **algoritma XGBoost Classifier**.
 Sistem dikembangkan menggunakan **Python**, **scikit-learn**, **XGBoost**, dan **Streamlit** sebagai antarmuka pengguna.
@@ -136,8 +130,8 @@ Aplikasi terdiri dari dua tab utama:
 
 ## ⚠️ Catatan Penting
 
-* Aplikasi ini **bukan alat diagnosis medis**, melainkan **alat bantu pendukung keputusan**.
-* Hasil prediksi harus dikonsultasikan dengan tenaga medis profesional.
+- Aplikasi ini **bukan alat diagnosis medis**, melainkan **alat bantu pendukung keputusan**.
+- Hasil prediksi harus dikonsultasikan dengan tenaga medis profesional.
 
 ---
 
@@ -145,30 +139,6 @@ Aplikasi terdiri dari dua tab utama:
 
 Proyek ini dikembangkan untuk keperluan:
 
-* Tugas akhir / skripsi
-* Pembelajaran machine learning
-* Demonstrasi sistem klasifikasi kesehatan berbasis web
+- Pembelajaran Sistem Cerdas
 
 ---
-
-## 📄 Lisensi
-
-Proyek ini menggunakan lisensi **MIT License**
-Silakan digunakan dan dikembangkan untuk keperluan akademik.
-
----
-
-## 🙌 Penutup
-
-Semoga aplikasi ini dapat membantu dalam pengembangan sistem deteksi dini Alzheimer dan menjadi referensi pembelajaran machine learning berbasis kesehatan.
-
----
-
-Kalau kamu mau, aku bisa:
-
-* ✅ bikinkan **`requirements.txt`**
-* ✅ bikinkan **MIT LICENSE**
-* ✅ bantu **deskripsi repo GitHub (About section)**
-* ✅ bantu **deployment ke Streamlit Cloud + badge**
-
-Tinggal bilang mau lanjut yang mana 👌
