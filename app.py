@@ -235,7 +235,11 @@ with tab4:
         submit = st.form_submit_button("Prediksi")
 
     if submit:
-        st.markdown("### 📥 Data Mentah")
+        # ===============================
+        # DATA INPUT
+        # ===============================
+        st.markdown("### 📥 Data Mentah Pasien")
+
         input_data = pd.DataFrame([[  
             age, gender, 0, 2, bmi, 0,
             8.5, 5.2, 1.3, 7.8,
@@ -247,40 +251,66 @@ with tab4:
 
         st.dataframe(input_data)
 
+        # ===============================
+        # PREPROCESSING
+        # ===============================
         st.markdown("### ⚙️ Data Setelah Preprocessing")
         scaled = scaler.transform(input_data)
         st.dataframe(pd.DataFrame(scaled, columns=FEATURE_COLUMNS))
 
+        # ===============================
+        # PREDIKSI
+        # ===============================
         st.markdown("### 🤖 Hasil Deteksi")
+
         pred = model.predict(scaled)[0]
-        prob = model.predict_proba(scaled)[0][1]
+        proba = model.predict_proba(scaled)[0]
+
+        # ===============================
+        # MAPPING LABEL (AMAN & EKSPLISIT)
+        # Asumsi dataset:
+        # 0 = Alzheimer
+        # 1 = Non-Alzheimer
+        # ===============================
+        idx_alz = list(model.classes_).index(0)
+        prob_alz = proba[idx_alz]
+
+        if pred == 0:
+            diagnosis = "🟥 Alzheimer"
+        else:
+            diagnosis = "🟩 Non-Alzheimer"
 
         st.success("Deteksi Selesai")
-        st.write("**Diagnosis:**", "🟥 Alzheimer" if pred == 1 else "🟩 Non-Alzheimer")
-        st.write("**Probabilitas Alzheimer:**", f"{prob:.2%}")
+        st.write("**Diagnosis:**", diagnosis)
+        st.write("**Probabilitas Alzheimer:**", f"{prob_alz:.2%}")
+
+        # ===============================
+        # REKOMENDASI SISTEM
+        # ===============================
         st.markdown("### 📝 Rekomendasi Sistem")
 
-        if pred == 1:
+        if pred == 0:
             st.warning("""
-            **Hasil menunjukkan risiko Alzheimer.**
-        
-            🔹 Disarankan untuk:
-            - Melakukan konsultasi dengan **dokter spesialis saraf**
-            - Menjalani **pemeriksaan lanjutan** (tes kognitif lanjutan, MRI/CT Scan)
-            - Melibatkan **keluarga atau caregiver** dalam pemantauan aktivitas harian
-            - Melakukan **monitoring rutin** terhadap kondisi pasien
-        
-            ⚠️ *Hasil ini bersifat pendukung keputusan dan bukan diagnosis medis final.*
+            **Pasien terindikasi memiliki risiko Alzheimer.**
+
+            🔹 Rekomendasi:
+            - Konsultasi dengan **dokter spesialis saraf**
+            - Pemeriksaan lanjutan (MRI / CT Scan / tes neuropsikologis)
+            - Pemantauan rutin oleh keluarga atau caregiver
+            - Dukungan aktivitas harian dan kognitif
+
+            ⚠️ *Hasil ini merupakan sistem pendukung keputusan,
+            bukan diagnosis medis final.*
             """)
         else:
             st.success("""
-            **Hasil menunjukkan risiko Alzheimer rendah (Non-Alzheimer).**
-        
-            🔹 Disarankan untuk:
-            - Menjaga **pola hidup sehat** (olahraga, nutrisi, tidur cukup)
-            - Melatih fungsi kognitif (membaca, permainan otak)
-            - Mengontrol faktor risiko seperti **hipertensi dan diabetes**
-            - Melakukan **pemeriksaan berkala** sebagai langkah pencegahan
+            **Pasien tidak terindikasi Alzheimer (risiko rendah).**
+
+            🔹 Rekomendasi:
+            - Menjaga pola hidup sehat
+            - Latihan kognitif secara rutin
+            - Mengontrol faktor risiko (diabetes, hipertensi)
+            - Pemeriksaan berkala sebagai pencegahan
             """)
 
 
