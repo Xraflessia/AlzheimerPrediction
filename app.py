@@ -259,7 +259,6 @@ with tab4:
         st.write("**Diagnosis:**", "🟥 Alzheimer" if pred == 1 else "🟩 Non-Alzheimer")
         st.write("**Probabilitas Alzheimer:**", f"{prob:.2%}")
         st.markdown("### 📝 Rekomendasi Sistem")
-        st.markdown("### 📝 Rekomendasi Sistem")
 
         if pred == 1:
             st.warning("""
