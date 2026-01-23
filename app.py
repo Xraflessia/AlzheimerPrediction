@@ -259,26 +259,29 @@ with tab4:
         st.write("**Diagnosis:**", "🟥 Alzheimer" if pred == 1 else "🟩 Non-Alzheimer")
         st.write("**Probabilitas Alzheimer:**", f"{prob:.2%}")
         st.markdown("### 📝 Rekomendasi Sistem")
+        st.markdown("### 📝 Rekomendasi Sistem")
+
         if pred == 1:
-    st.warning("""
-    **Hasil menunjukkan risiko Alzheimer.**
+            st.warning("""
+            **Hasil menunjukkan risiko Alzheimer.**
+        
+            🔹 Disarankan untuk:
+            - Melakukan konsultasi dengan **dokter spesialis saraf**
+            - Menjalani **pemeriksaan lanjutan** (tes kognitif lanjutan, MRI/CT Scan)
+            - Melibatkan **keluarga atau caregiver** dalam pemantauan aktivitas harian
+            - Melakukan **monitoring rutin** terhadap kondisi pasien
+        
+            ⚠️ *Hasil ini bersifat pendukung keputusan dan bukan diagnosis medis final.*
+            """)
+        else:
+            st.success("""
+            **Hasil menunjukkan risiko Alzheimer rendah (Non-Alzheimer).**
+        
+            🔹 Disarankan untuk:
+            - Menjaga **pola hidup sehat** (olahraga, nutrisi, tidur cukup)
+            - Melatih fungsi kognitif (membaca, permainan otak)
+            - Mengontrol faktor risiko seperti **hipertensi dan diabetes**
+            - Melakukan **pemeriksaan berkala** sebagai langkah pencegahan
+            """)
 
-    🔹 Disarankan untuk:
-    - Melakukan konsultasi dengan **dokter spesialis saraf**
-    - Menjalani **pemeriksaan lanjutan** (tes kognitif lanjutan, MRI/CT Scan)
-    - Melibatkan **keluarga atau caregiver** dalam pemantauan aktivitas harian
-    - Melakukan **monitoring rutin** terhadap kondisi pasien
-
-    ⚠️ *Hasil ini bersifat pendukung keputusan dan bukan diagnosis medis final.*
-    """)
-else:
-    st.success("""
-    **Hasil menunjukkan risiko Alzheimer rendah (Non-Alzheimer).**
-
-    🔹 Disarankan untuk:
-    - Menjaga **pola hidup sehat** (olahraga, nutrisi, tidur cukup)
-    - Melatih fungsi kognitif (membaca, permainan otak)
-    - Mengontrol faktor risiko seperti **hipertensi dan diabetes**
-    - Melakukan **pemeriksaan berkala** sebagai langkah pencegahan
-    """)
 
